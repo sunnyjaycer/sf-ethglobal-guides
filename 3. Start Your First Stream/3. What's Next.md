@@ -1,0 +1,2 @@
+Target audience: mildly-experienced Web3 developer with some Solidity and/or javascript experience
+Goal: Get from Point A (doesn't know how to write code that streams money) to Point B (does know how to stream)
