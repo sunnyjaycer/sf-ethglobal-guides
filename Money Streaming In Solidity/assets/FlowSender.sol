@@ -10,18 +10,18 @@ import {IConstantFlowAgreementV1} from "@superfluid-finance/ethereum-contracts/c
 import {CFAv1Library} from "@superfluid-finance/ethereum-contracts/contracts/apps/CFAv1Library.sol";
 
 // For deployment on Goerli Testnet
-contract MoneyRouter {
+contract FlowSender {
 
     using CFAv1Library for CFAv1Library.InitData;
     CFAv1Library.InitData public cfaV1; //initialize cfaV1 variable
     
     mapping (address => bool) public accountList;
 
-    ISuperToken public goerliDaiX;
+    ISuperToken public fDAIx;
 
     // Host address on Goerli = 0x22ff293e14F1EC3A09B137e9e06084AFd63adDF9
     // fDAIx address on Goerli = 0xF2d68898557cCb2Cf4C10c3Ef2B034b2a69DAD00
-    constructor(ISuperfluid _host, ISuperToken _goerliDaiX) {
+    constructor(ISuperfluid _host, ISuperToken _fDAIx) {
 
         //initialize InitData struct, and set equal to cfaV1        
         cfaV1 = CFAv1Library.InitData(
@@ -34,7 +34,7 @@ contract MoneyRouter {
             )
         );
 
-        goerliDaiX = _goerliDaiX;
+        fDAIx = _fDAIx;
 
     }
 
@@ -42,16 +42,16 @@ contract MoneyRouter {
     function gainDaiX() external {
 
         // Get address of fDAI by getting underlying token address from DAIx token
-        IFakeDAI fdai = IFakeDAI( goerliDaiX.getUnderlyingToken() );
+        IFakeDAI fDAI = IFakeDAI( fDAIx.getUnderlyingToken() );
         
         // Mint 10,000 fDAI
-        fdai.mint(address(this), 10000e18);
+        fDAI.mint(address(this), 10000e18);
 
         // Approve fDAIx contract to spend fDAI
-        fdai.approve(address(goerliDaiX), 20000e18);
+        fDAI.approve(address(fDAIx), 20000e18);
 
         // Wrap the fDAI into fDAIx
-        goerliDaiX.upgrade(10000e18);
+        fDAIx.upgrade(10000e18);
 
     }
 
@@ -59,7 +59,7 @@ contract MoneyRouter {
     function createStream(int96 flowRate, address receiver) external {
 
         // Create stream
-        cfaV1.createFlow(receiver, goerliDaiX, flowRate);
+        cfaV1.createFlow(receiver, fDAIx, flowRate);
 
     }
 
@@ -67,7 +67,7 @@ contract MoneyRouter {
     function updateStream(int96 flowRate, address receiver) external {
 
         // Update stream
-        cfaV1.updateFlow(receiver, goerliDaiX, flowRate);
+        cfaV1.updateFlow(receiver, fDAIx, flowRate);
 
     }
 
@@ -75,7 +75,7 @@ contract MoneyRouter {
     function deleteStream(address receiver) external {
 
         // Delete stream
-        cfaV1.deleteFlow(address(this), receiver, goerliDaiX);
+        cfaV1.deleteFlow(address(this), receiver, fDAIx);
 
     }
 
@@ -83,7 +83,7 @@ contract MoneyRouter {
     function readFlowRate(address receiver) external view returns (int96 flowRate) {
         
         // Get flow rate
-        (,flowRate,,) = cfaV1.cfa.getFlow(goerliDaiX, address(this), receiver);
+        (,flowRate,,) = cfaV1.cfa.getFlow(fDAIx, address(this), receiver);
 
     }
 
