@@ -23,7 +23,7 @@ Just like how a smart contract can transfer its own ERC20 tokens, you can set up
 
 Regular ERC20 Tokens can be streamed
 - True
-- False
+- False [✅]
 
 </Section>
 
@@ -56,13 +56,13 @@ The naming convention for Wrapper Super Tokens is the original token symbol + "x
 There is a ERC20 token with the symbol "SUNNY". What should be the symbol of the Wrapper Super Token for SUNNY token?
 - superSUNNY
 - sfSUNNY
-- SUNNYx
+- SUNNYx [✅]
 - SUNNYs
 
 <Quiz id={"vxz3f"} />
 
 How do you go from plain DAI to DAIx?
-- Approve DAIx to spend my DAI and then call upgrade on the DAIx contract with the amount of DAI I want to wrap into DAIx.
+- Approve DAIx to spend my DAI and then call upgrade on the DAIx contract with the amount of DAI I want to wrap into DAIx. [✅]
 - Approve DAI to spend my DAIx and then call upgrade on the DAIx contract with the amount of DAI I want to wrap into DAIx.
 - Approve DAI to spend my DAIx and then call downgrade on the DAI contract with the amount of DAI I want to wrap into DAIx.
 - Approve DAIx to spend my DAI and then call downgrade on the DAI contract with the amount of DAI I want to wrap into DAIx.
@@ -109,13 +109,13 @@ Last thing to note, is that the real-time balance is accounted in the CFA's own 
 
 True or False? Superfluid submits transactions every second to update my balance when I start a stream.
 - True: Superfluid spends a lot on gas!
-- False: You're really just reading the value off a formula in the `balanceOf()` function which uses time as a variable
+- False: You're really just reading the value off a formula in the `balanceOf()` function which uses time as a variable [✅]
 
 <Quiz id={"6hyba"} />
 
 You have 200 SUNNYx in your wallet. You start a stream to someone at a rate of 5 SUNNYx per second and then 20 seconds pass. You open your Metamask (which uses `balanceOf()` to display your balance). How much SUNNYx do you have?
 - 200 SUNNYx
-- 100 SUNNYx
+- 100 SUNNYx [✅]
 - 0 SUNNYx
 - 300 SUNNYx
 
