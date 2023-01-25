@@ -47,7 +47,7 @@ Say you want to go back from Wrapper Super Tokens to the underlying ERC20 token.
 
 ![img](./assets/wrapper.png)
 
-The naming convention for Wrapper Super Tokens is the original token symbol + "x" (Ex: USDC ➡ USDCx).
+The naming convention for Wrapper Super Tokens is the original token symbol + "x" (Ex: USDC ➡ USDCx). 
 
 ## Question
 
