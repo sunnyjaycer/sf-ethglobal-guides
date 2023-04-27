@@ -81,7 +81,7 @@ The CFA is what lets you stream money, so let's talk about it!
 
 Let's say your driving a car that's going 1 km per minute. If 13 minutes pass, then you would have travelled 1 km/min. * 13 min. = **13 miles**.
 
-Now similarly, if you are streaming at a rate of 1 DAIx per second and 13 seconds pass, then you would have moved 1 DAIx/sec. * 13 min. = **13 DAI**.
+Now similarly, if you are streaming at a rate of 1 DAIx per second and 13 seconds pass, then you would have moved 1 DAIx/sec. * 13 sec. = **13 DAI**.
 
 With each passing second, the amount of DAIx you've moved changes to 14, to 15, and so on.
 
@@ -159,10 +159,10 @@ You've probably seen a contract transfer ERC20 tokens on its own with the transf
 IERC20(tokenAddress).transfer(receiverAddress, amountToTransfer);
 ```
 
-Well, here's the equivalent for a contract streaming Super Tokens on its own 👇 It's not rocket science!
+Well, here's the equivalent for a contract streaming Super Tokens on its own 👇 It's very similar!
 
 ```
-cfaV1.createFlow(receiverAddress, superToken, perSecondflowRate);
+ISuperToken(superTokenAddress).createFlow(receiverAddress, perSecondflowRate);
 ```
 
 However, there is some set up needed before hand in order for your contract to begin streaming money like that - read on!
@@ -171,7 +171,7 @@ However, there is some set up needed before hand in order for your contract to b
 
 To illustrate how a contract can send money in streams, we'll use a simple contract which we'll call the FlowSender. Basically, FlowSender is going to fund itself with fDAIx and be able to create, update, and delete streams to addresses of our choosing.
 
-Click on this [**REMIX IDE**](https://remix.ethereum.org/?#gist=c883df8c75df47870bc23c1a11d3e36a&version=soljson-v0.8.13+commit.abaa5c0e.js) link to find the FlowSender contract. Note that the IDE will open all the environment folders at once; you can close them such that the file directory looks like this:
+Click on this [**REMIX IDE**](https://remix.ethereum.org/?#gist=99c70cb197e84c4e61dfb1eb2e6350a6&version=soljson-v0.8.14+commit.80d49f37.js&lang=en&optimize=false&runs=200&evmVersion=null) link to find the FlowSender contract. Note that the IDE will open all the environment folders at once; you can close them such that the file directory looks like this:
 
 ![needed-directory](./assets/needed-directory.png)
 
@@ -183,34 +183,21 @@ First, we make these imports which are needed for setting up the contract to int
 
 ```
 
+import {IFakeDAI} from "./IFakeDAI.sol";
+
 import { ISuperfluid, ISuperToken } from "@superfluid-finance/ethereum-contracts/contracts/interfaces/superfluid/ISuperfluid.sol";
 
-import {IConstantFlowAgreementV1} from "@superfluid-finance/ethereum-contracts/contracts/interfaces/agreements/IConstantFlowAgreementV1.sol";
-
-import {CFAv1Library} from "@superfluid-finance/ethereum-contracts/contracts/apps/CFAv1Library.sol";
+import { SuperTokenV1Library } from "@superfluid-finance/ethereum-contracts/contracts/apps/SuperTokenV1Library.sol";
 
 ```
 
-Then, we set up the CFA Library with these two bits of code in the contracts:
+Then, we set up the SuperTokenV1Library Library with this line of code in the FlowSender contract:
 
 ```
-using CFAv1Library for CFAv1Library.InitData;
-CFAv1Library.InitData public cfaV1;               //initialize cfaV1 variable
+    using SuperTokenV1Library for ISuperToken;
 ```
-and in the constructor:
-```
-//initialize InitData struct, and set equal to cfaV1        
-cfaV1 = CFAv1Library.InitData(
-    _host,
-    //here, we are deriving the address of the CFA using the host contract
-    IConstantFlowAgreementV1(
-        address(_host.getAgreementClass(
-                keccak256("org.superfluid-finance.agreements.ConstantFlowAgreement.v1")
-            ))
-    )
-);
-```
-To learn more about these instantiations, feel free to reference [here](https://docs.superfluid.finance/superfluid/developers/solidity-examples/solidity-libraries/cfav1-library#initializing-the-library) in our docs.
+
+All that did was set us up to be able to call Superfluid functions directly on ISuperToken objects in the FlowSender contract. To learn more about these instantiations, feel free to reference [here](https://docs.superfluid.finance/superfluid/developers/solidity-examples/solidity-libraries/cfav1-library#initializing-the-library) in our docs.
 
 ## 2. Getting the contract some Super Tokens
 
@@ -224,16 +211,16 @@ fDAI has a public mint function which lets anyone mint their own fDAI whenever t
 function gainDaiX() external {
 
     // Get address of fDAI by getting underlying token address from DAIx token
-    IFakeDAI fdai = IFakeDAI( goerliDaiX.getUnderlyingToken() );
+    IFakeDAI fdai = IFakeDAI( daix.getUnderlyingToken() );
     
     // Mint 10,000 fDAI
     fdai.mint(address(this), 10000e18);
 
     // Approve fDAIx contract to spend fDAI
-    fdai.approve(address(goerliDaiX), 20000e18);
+    fdai.approve(address(daix), 20000e18);
 
     // Wrap the fDAI into fDAIx
-    goerliDaiX.upgrade(10000e18);
+    daix.upgrade(10000e18);
 
 }
 ```
@@ -243,10 +230,11 @@ function gainDaiX() external {
 Here's how we get the contract to send a stream of fDAIx from itself to an address of choice with `createStream`.
 
 ```
+/// @dev creates a stream from this contract to desired receiver at desired rate
 function createStream(int96 flowRate, address receiver) external {
 
     // Create stream
-    cfaV1.createFlow(receiver, goerliDaiX, flowRate);
+    daix.createFlow(receiver, flowRate);
 
 }
 ```
@@ -263,15 +251,9 @@ function createStream(int96 flowRate, address receiver) external {
 
 **Head to the Deploy tab and deploy the contract with the following parameters:**
 
-You can find these addresses in our docs [here](https://docs.superfluid.finance/superfluid/developers/networks#test-networks).
+`_DAIX` - 0xF2d68898557cCb2Cf4C10c3Ef2B034b2a69DAD00
 
-The address of the Superfluid Host contract on Goerli Testnet
-
-`_HOST` - 0x22ff293e14F1EC3A09B137e9e06084AFd63adDF9
-
-The address of fDAIx (the wrapper Super Token for a free mintable fDAI token) on Goerli Testnet
-
-`_GOERLIDAIX` - 0xF2d68898557cCb2Cf4C10c3Ef2B034b2a69DAD00
+The address of fDAIx (the wrapper Super Token for a free mintable fDAI token) on Mumbai Testnet. You can other addresses in our docs [here](https://docs.superfluid.finance/superfluid/developers/networks#test-networks).
 
 ![deploy](./assets/deploy.png)
 
@@ -323,8 +305,11 @@ Check out these other guides to move on to more advanced concepts 👇
 ## Links
 
 **[Discord](https://discord.gg/XsK7nahanQ)**
+
 **[Twitter](https://twitter.com/intent/follow?screen_name=Superfluid_HQ)**
+
 **[GitHub](https://github.com/superfluid-finance)**
-**[Superfluid Continuous Hackathon](https://docs.superfluid.finance/superfluid/resources/contribute/superfluid-wave-pool)**
+
+**[Superfluid Wave Pool](https://docs.superfluid.finance/superfluid/resources/contribute/superfluid-wave-pool)**
 
 </Section>
