@@ -61,7 +61,7 @@ To show how to set up Super Apps, we're going to build a simple "BUIDLxDispenser
 
 All it will do is react to a stream of fDAIx by sending the sender a stream of BUIDLx tokens. If the sender stops streaming fDAIx to it, the BUIDLxDispenser will cancel the their stream of BUIDLx tokens.
 
-First, click on this [**REMIX IDE**](https://remix.ethereum.org/#gist=7ee300d1258fd8875513ef564879c150&version=soljson-v0.8.14+commit.abaa5c0e.js&optimize=false&runs=200&evmVersion=null&lang=en) link to find the BUIDLxDispenser contract. Note that the IDE will open all the environment folders at once; you can close them such that the file directory looks like this:
+First, click on this [**REMIX IDE**](https://remix.ethereum.org/#gist=d1a0a5146fe2adfdcd8e1176a88b7641&version=soljson-v0.8.18+commit.87f61d96.js&optimize=false&runs=200&evmVersion=null&lang=en) link to find the BUIDLxDispenser contract. Note that the IDE will open all the environment folders at once; you can close them such that the file directory looks like this:
 
 ![retracted-directory](./assets/retracted-directory.png)
 
@@ -229,7 +229,7 @@ Ok, so now we've digested the contract code. Let's test it out!
 
 <Section name="4. Trying out the BUIDLx Dispenser" description="Trying out the BUIDLx Dispenser">
 
-Let's actually open a stream to a live deployment of the BUIDLx Dispenser on Mumbai to see how it works. One has already been deployed to `0xdBf14425713d180DB3F019b350e2EC4C140120A2`.
+Let's actually open a stream to a live deployment of the BUIDLx Dispenser on Mumbai to see how it works. One has already been deployed to `0xF7EB40C754b17Da353214061B22498aD2686e3f8`.
 
 **1. Get fDAIx**
 
@@ -239,9 +239,9 @@ Head here for an fDAIx faucet.
 
 This is an easy way to start streams right on Etherscan. Connect your wallet, head to the `createFlow` function and fill in the parameters with the below:
 
-- `token`: `0x5D8B4C2554aeB7e86F387B4d6c00Ac33499Ed01f`
+- `token`: `0x5D8B4C2554aeB7e86F387B4d6c00Ac33499Ed01f` (fDAIx)
 - `sender`: (your address)
-- `receiver`: `0xdBf14425713d180DB3F019b350e2EC4C140120A2` (address of BUIDLx Dispenser)
+- `receiver`: `0xF7EB40C754b17Da353214061B22498aD2686e3f8` (address of BUIDLx Dispenser)
 - `flowrate`: 10000 (honestly whatever you want)
 - `userData`: `0x`
 
