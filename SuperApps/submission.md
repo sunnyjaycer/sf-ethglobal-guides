@@ -13,6 +13,8 @@ This guide assumes you've already completed the [**Money Streaming 101 Guide**](
 
 Here, we'll get into Super Apps, a powerful Superfluid smart contract development feature. Let's get into it!
 
+![super app graphic](./assets/graphic.png)
+
 </Section>
 
 <Section name="2. What's a Super App" description="Introduction to Super Apps">
@@ -23,7 +25,12 @@ Super Apps are smart contracts that are registered with the Superfluid Protocol 
 
 Callbacks are custom code that a developer can implement in a Super App that triggers when a stream to the Super App is created, updated, or deleted. This code could enact anything from minting an NFT to even initiating a new stream - it's super flexible.
 
-That's all there is to it!
+That's the nutshell explanation you need for this guide, but if you'd like more, check out our [In-Depth Overview](https://docs.superfluid.finance/superfluid/protocol-overview/in-depth-overview/super-apps).
+
+<center>
+<img src="./assets/mechanics.png" alt="process" width="40%"/>
+</center>
+
 
 ## Why Are Super Apps Needed?
 
